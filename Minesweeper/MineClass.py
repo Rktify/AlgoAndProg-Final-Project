@@ -125,7 +125,7 @@ class Game:
             for event in pygame.event.get():
                 if (event.type == pygame.QUIT):
                     run = False
-                if (event.type == pygame.MOUSEBUTTONDOWN):
+                if (event.type == pygame.MOUSEBUTTONDOWN): #Click
                     position = pygame.mouse.get_pos()
                     rightClick = pygame.mouse.get_pressed()[2]
                     self.Click(position, rightClick)
@@ -136,35 +136,35 @@ class Game:
                 run = False #Closes game
         pygame.quit()
 
-    def grid(self): #The board
+    def grid(self): #Draw the board
         topLeft = (0, 0)
         for row in range(self.board.getSize()[0]):
             for col in range(self.board.getSize()[1]):
-                piece = self.board.getPiece((row, col))
-                image = self.getImg(piece)
-                self.screen.blit(image, topLeft)
+                piece = self.board.getPiece((row, col)) #Getting the peice
+                image = self.getImg(piece)#Get image based on piece
+                self.screen.blit(image, topLeft) #Placing images in the correct places
                 topLeft = topLeft[0] + self.gridsize[0], topLeft[1]
             topLeft = 0, topLeft[1] + self.gridsize[1]
 
-    def Limg(self):
+    def Limg(self): #Load Images
         self.imgs = {}
         for fileName in os.listdir("Minesweeper/images"):
-            if not fileName.endswith(".png"):
+            if not fileName.endswith(".png"): #If the file isnt a png, it wont open
                 continue
             img = pygame.image.load(f"Minesweeper/images/{fileName}")
-            img = pygame.transform.scale(img, self.gridsize)
-            self.imgs[fileName.split(".")[0]] = img
+            img = pygame.transform.scale(img, self.gridsize) #Scales the image
+            self.imgs[fileName.split(".")[0]] = img #removes the png
 
-    def getImg(self, piece):
+    def getImg(self, piece): #Change the images based on actions
         string = None
         if piece.getOpened():
             if piece.getBomb():
-                string = "bombclicked"
+                string = "bombclicked" #If you click on a bomb
             else:
-                string = str(piece.getNumAround())
+                string = str(piece.getNumAround()) #If you click on a number, it will get the images based on the number
         else:
             if piece.getFlagged():
-                string = "flag"
+                string = "flag" #This is for the flagged status
             else:
                 string = "empty"
         # if piece.getBomb():
@@ -174,9 +174,9 @@ class Game:
         return self.imgs[string]
 
     def Click(self, position, rightClick):
-        if self.board.getLose():
+        if self.board.getLose(): #Lose state
             print("You Lost :(")
             return
-        index = position[1] // self.gridsize[1], position[0] // self.gridsize[0]
-        piece = self.board.getPiece(index)
+        index = position[1] // self.gridsize[1], position[0] // self.gridsize[0] #Getting the coordinate for the blocks
+        piece = self.board.getPiece(index) #Gets the piece based on the index
         self.board.Click(piece, rightClick)
