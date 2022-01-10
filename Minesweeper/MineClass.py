@@ -2,113 +2,6 @@ import pygame
 import os
 from random import random
 
-class Board: #This is the Board class, mostly for stuff around the board
-    def __init__(self, size, prob): #THis is the Initializer of the code
-        self.size = size #The size of the game (blocks)
-        self.prob = prob #The probability of the block being a bomb
-        self.lose = False #Lose obviously false the beginner or else already GG we lose =D
-        self.numOpened = 0 #The number of opened Blocks
-        self.setBoard()
-
-
-    def setBoard(self): #Setting up the board
-        self.numNotBombs = 0 #The number of blocks that does not have a bomb in them
-        self.board = []
-        for row in range(self.size[0]):
-            row = []
-            for col in range(self.size[1]):
-                Bomb = random() < self.prob
-                if not Bomb:
-                    self.numNotBombs += 1 #Every block that isnt a bomb, numNotBombs + 1
-                piece = Pieces(Bomb) #pushes the bomb to piece
-                row.append(piece)
-            self.board.append(row)
-        self.setNumbers()
-
-    def setNumbers(self):
-        for row in range(self.size[0]):
-            for col in range(self.size[1]):
-                piece = self.getPiece((row, col))
-                numbers = self.getNumList((row, col))
-                piece.setNumbers(numbers)
-
-    def getNumList(self, index): #Getting the numbers for the adjacent blocks
-        numbers = []
-        for row in range(index[0] - 1, index[0] + 2):
-            for col in range(index[1] - 1, index[1] + 2):
-                outOfBounds = row < 0 or col < 0 or row >= self.size[0]  or col >= self.size[1]
-                same = row == index[0] and col == index[1]
-                if same or outOfBounds:
-                    continue
-                numbers.append(self.getPiece((row, col)))
-        return numbers
-
-    def getSize(self):
-        return self.size
-
-    def getPiece(self, index):
-        return self.board[index[0]][index[1]]
-
-    def getLose(self):
-        return self.lose
-
-    def getWon(self):
-        return  self.numNotBombs == self.numOpened #If the number of blocks that doesnt have a bomb in them = the number of blocks that are opened, we win
-
-    def Click(self, piece, flag):
-        if piece.getOpened() or (not flag and piece.getFlagged()): #If the piece is opened and not flagged, we cna click
-            return
-        elif flag:
-            piece.toggleFlag() #if we right clicked we flag the block
-            return
-        piece.click()
-        if piece.getBomb():
-            self.lose = True #if block has bomb we lose
-            return
-        self.numOpened += 1
-        if piece.getNumAround() != 0: #If the block is 0 , itll keep opening until it reaches a block that isnt 0
-            return
-        for i in piece.getNumbers():
-            if not i.getBomb() and not i.getOpened() :
-                self.Click(i, False)
-
-class Pieces:
-    def __init__(self, Bomb): #Initializer
-        self.Bomb = Bomb
-        self.opened = False
-        self.flagged = False
-
-    def getBomb(self):
-        return self.Bomb
-
-    def getOpened(self):
-        return self.opened
-
-    def getFlagged(self):
-        return self.flagged
-
-    def setNumbers(self, numbers):
-        self.numbers = numbers
-        self.setNumAround()
-
-    def setNumAround(self): #The adjacent numbers
-        self.numAround = 0
-        for piece in self.numbers:
-            if piece.getBomb():
-                self.numAround += 1 #If it has a bomb, the number will rise to the amount of bombs it has
-
-    def getNumAround(self):
-        return self.numAround
-
-    def toggleFlag(self):
-        self.flagged = not self.flagged
-
-    def click(self):
-        self.opened = True
-
-    def getNumbers(self):
-        return self.numbers
-
 class Game:
     def __init__(self, SSize, board): #Initializer
         self.board = board
@@ -134,6 +27,9 @@ class Game:
             if self.board.getWon(): #Win state
                 print("You won! =D")
                 run = False #Closes game
+            elif self.board.getLose(): #Lose state
+                print("You Lost :(")
+                run = False
         pygame.quit()
 
     def grid(self): #Draw the board
@@ -174,9 +70,115 @@ class Game:
         return self.imgs[string]
 
     def Click(self, position, rightClick):
-        if self.board.getLose(): #Lose state
-            print("You Lost :(")
-            return
         index = position[1] // self.gridsize[1], position[0] // self.gridsize[0] #Getting the coordinate for the blocks
         piece = self.board.getPiece(index) #Gets the piece based on the index
         self.board.Click(piece, rightClick)
+
+
+
+class Board: #This is the Board class, mostly for stuff around the board
+    def __init__(self, size, prob): #THis is the Initializer of the code
+        self.size = size #The size of the game (blocks)
+        self.prob = prob #The probability of the block being a bomb
+        self.lose = False #Lose obviously false in the beginning or else already GG we lose =D
+        self.numOpened = 0 #The number of opened Blocks
+        self.setBoard()
+
+
+    def setBoard(self): #Setting up the board
+        self.numNotBombs = 0 #The number of blocks that does not have a bomb in them
+        self.board = []
+        for row in range(self.size[0]):
+            row = []
+            for col in range(self.size[1]):
+                Bomb = random() < self.prob #Bombs
+                if not Bomb:
+                    self.numNotBombs += 1 #Every block that isnt a bomb, numNotBombs + 1
+                piece = Pieces(Bomb) #pushes the bomb to piece
+                row.append(piece)
+            self.board.append(row)
+        self.setNumbers()
+
+    def setNumbers(self): #setting the numbers
+        for row in range(self.size[0]):
+            for col in range(self.size[1]):
+                piece = self.getPiece((row, col))
+                numbers = self.getNumList((row, col))
+                piece.setNumbers(numbers)
+
+    def getNumList(self, index): #Getting the numbers for the adjacent blocks
+        numbers = []
+        for row in range(index[0] - 1, index[0] + 2):
+            for col in range(index[1] - 1, index[1] + 2):
+                outOfBounds = row < 0 or col < 0 or row >= self.size[0]  or col >= self.size[1]
+                same = row == index[0] and col == index[1]
+                if same or outOfBounds:
+                    continue
+                numbers.append(self.getPiece((row, col)))
+        return numbers
+
+    def getSize(self): #Self explanatory get funcs
+        return self.size
+
+    def getPiece(self, index):
+        return self.board[index[0]][index[1]]
+
+    def getLose(self):
+        return self.lose
+
+    def getWon(self):
+        return  self.numNotBombs == self.numOpened #If the number of blocks that doesnt have a bomb in them = the number of blocks that are opened, we win
+
+    def Click(self, piece, flag):
+        if piece.getOpened() or (not flag and piece.getFlagged()): #If the piece is opened and not flagged, we cna click
+            return
+        elif flag:
+            piece.toggleFlag() #if we right clicked we flag the block
+            return
+        piece.click()
+        if piece.getBomb():
+            self.lose = True #if block has bomb we lose
+            return
+        self.numOpened += 1
+        if piece.getNumAround() != 0: #If the block is 0 , itll keep opening until it reaches a block that isnt 0
+            return
+        for i in piece.getNumbers():
+            if not i.getBomb() and not i.getOpened() :
+                self.Click(i, False)
+
+class Pieces:
+    def __init__(self, Bomb): #Initializer
+        self.Bomb = Bomb
+        self.opened = False
+        self.flagged = False
+
+    def getBomb(self): #Self explanatory get funcs
+        return self.Bomb
+
+    def getOpened(self):
+        return self.opened
+
+    def getFlagged(self):
+        return self.flagged
+
+    def getNumbers(self):
+        return self.numbers
+
+    def getNumAround(self):
+        return self.numAround
+
+    def toggleFlag(self): #toggleing the rightClick flag
+        self.flagged = not self.flagged
+
+    def click(self): #Handle click
+        self.opened = True
+
+    def setNumbers(self, numbers):
+        self.numbers = numbers
+        self.setNumAround()
+
+    def setNumAround(self): #setting the number according the amount of bombs it has around it
+        self.numAround = 0
+        for piece in self.numbers:
+            if piece.getBomb():
+                self.numAround += 1 #If it has a bomb, the number will rise to the amount of bombs it has around it
