@@ -45,11 +45,10 @@ class Game:
     def Limg(self): #Load Images
         self.imgs = {}
         for fileName in os.listdir("Minesweeper/images"):
-            if not fileName.endswith(".png"): #If the file isnt a png, it wont open
-                continue
             img = pygame.image.load(f"Minesweeper/images/{fileName}")
             img = pygame.transform.scale(img, self.gridsize) #Scales the image
             self.imgs[fileName.split(".")[0]] = img #removes the png
+
 
     def getImg(self, piece): #Change the images based on actions
         string = None
@@ -70,8 +69,8 @@ class Game:
         return self.imgs[string]
 
     def Click(self, position, rightClick):
-        index = position[1] // self.gridsize[1], position[0] // self.gridsize[0] #Getting the coordinate for the blocks
-        piece = self.board.getPiece(index) #Gets the piece based on the index
+        coords = position[1] // self.gridsize[1], position[0] // self.gridsize[0] #Getting the coordinate for the blocks
+        piece = self.board.getPiece(coords) #Gets the piece based on the position (coordinates, in pygame top left is (0, 0))
         self.board.Click(piece, rightClick)
 
 
@@ -102,17 +101,16 @@ class Board: #This is the Board class, mostly for stuff around the board
     def setNumbers(self): #setting the numbers
         for row in range(self.size[0]):
             for col in range(self.size[1]):
-                piece = self.getPiece((row, col))
-                numbers = self.getNumList((row, col))
-                piece.setNumbers(numbers)
+                piece = self.getPiece((row, col)) #getting the pieces for each coods
+                numbers = self.getNumList((row, col)) #getting the numbers for each coods
+                piece.setNumbers(numbers) #Setting each piece's numbers based on the list of numbers that it got from getNumList
 
-    def getNumList(self, index): #Getting the numbers for the adjacent blocks
+    def getNumList(self, coords): #Getting the numbers for the adjacent blocks
         numbers = []
-        for row in range(index[0] - 1, index[0] + 2):
-            for col in range(index[1] - 1, index[1] + 2):
+        for row in range(coords[0] - 1, coords[0] + 2):
+            for col in range(coords[1] - 1, coords[1] + 2):
                 outOfBounds = row < 0 or col < 0 or row >= self.size[0]  or col >= self.size[1]
-                same = row == index[0] and col == index[1]
-                if same or outOfBounds:
+                if outOfBounds:
                     continue
                 numbers.append(self.getPiece((row, col)))
         return numbers
@@ -140,10 +138,10 @@ class Board: #This is the Board class, mostly for stuff around the board
             self.lose = True #if block has bomb we lose
             return
         self.numOpened += 1
-        if piece.getNumAround() != 0: #If the block is 0 , itll keep opening until it reaches a block that isnt 0
+        if piece.getNumAround() != 0: #Checks if a neighboring block is a 0 or not, to continue to the function below
             return
-        for i in piece.getNumbers():
-            if not i.getBomb() and not i.getOpened() :
+        for i in piece.getNumbers(): #If the block is 0 , itll keep opening until it reaches a block that isnt a bomb or an opened block
+            if not i.getBomb() and not i.getOpened():
                 self.Click(i, False)
 
 class Pieces:
@@ -179,6 +177,6 @@ class Pieces:
 
     def setNumAround(self): #setting the number according the amount of bombs it has around it
         self.numAround = 0
-        for piece in self.numbers:
-            if piece.getBomb():
+        for i in self.numbers:
+            if i.getBomb():
                 self.numAround += 1 #If it has a bomb, the number will rise to the amount of bombs it has around it
