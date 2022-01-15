@@ -72,13 +72,13 @@ class Game:
             else:
                 string = "empty" #If its not opened, and not flagged, then yea its empty =D
         if self.board.getLose():
-            if piece.getBomb():#If we lose, it will reveal all the bombs
+            if piece.getBomb():#If user lose, it will reveal all the bombs
                 if not piece.getOpened():
                     string = "bomb"
                 else:
                     string ="bombclicked"
         if self.board.getWon():
-            if piece.getBomb():
+            if piece.getBomb(): #If user wins, it will auto flag the blocks that has not been flagged yet.
                 if not piece.getOpened():
                     string = "flag"
                 else:
