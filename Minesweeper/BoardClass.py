@@ -58,6 +58,7 @@ class Board: #This is the Board class, mostly for stuff around the board
         elif flag:
             piece.toggleFlag() #if we right clicked we flag the block
             return
+        piece.click() #opens the block
         if piece.getBomb():
             self.lose = True #if block has bomb we lose
             return
