@@ -1,4 +1,4 @@
-from random import random
+import random
 from PiecesClass import *
 
 class Board: #This is the Board class, mostly for stuff around the board
