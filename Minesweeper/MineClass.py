@@ -1,5 +1,6 @@
 import pygame
 import os
+import time
 from PiecesClass import *
 from BoardClass import *
 
@@ -27,9 +28,11 @@ class Game:
             pygame.display.flip()
             if self.board.getWon(): #Win state
                 print("You won! =D")
+                time.sleep(3)
                 run = False #Closes game
             elif self.board.getLose(): #Lose state
                 print("You Lost :(")
+                time.sleep(4)
                 run = False #Closes game
         pygame.quit()
 
@@ -50,9 +53,8 @@ class Game:
             img = pygame.transform.scale(img, self.gridsize) #Scales the image
             self.imgs[fileName.split(".")[0]] = img #removes the png
 
-
     def getImg(self, piece): #Change the images based on actions
-        string = None
+        string = ""
         if piece.getOpened():
             if piece.getBomb():
                 string = "bombclicked" #If you click on a bomb
@@ -63,10 +65,12 @@ class Game:
                 string = "flag" #This is for the flagged status
             else:
                 string = "empty" #If its not opened, and not flagged, then yea its empty =D
-        # if piece.getBomb():
-        #     string = "bomb"
-        # else:
-        #     string = str(piece.getNumAround())
+        if self.board.getLose():
+            if piece.getBomb():#If we lose, it will reveal all the bombs
+                if not piece.getOpened():
+                    string = "bomb"
+                else:
+                    string ="bombclicked"
         return self.imgs[string] #Returns the image so it can be placed to each block
 
     def Click(self, position, rightClick):
