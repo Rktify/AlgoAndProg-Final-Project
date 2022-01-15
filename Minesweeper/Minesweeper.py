@@ -7,7 +7,7 @@ while h < 5 or h > 30:
 
 w = int(input("How many blocks (width) do you want to have in the board? (min. 5, max. 30): ")) #width of baord
 while w < 5 or h > 30:
-    w = int(input("How many blocks (height) do you want to have in the board? (min. 5, max. 30): "))
+    w = int(input("How many blocks (width) do you want to have in the board? (min. 5, max. 30): "))
 
 size = (h, w) #The size of the board, i usually play 20x20
 
