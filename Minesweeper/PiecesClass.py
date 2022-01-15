@@ -19,7 +19,7 @@ class Pieces:
     def getNumAround(self):
         return self.numAround
 
-    def toggleFlag(self): #toggleing the rightClick flag
+    def toggleFlag(self): #toggling the rightClick flag
         self.flagged = not self.flagged
 
     def click(self): #Handle click
