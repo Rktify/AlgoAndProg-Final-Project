@@ -28,12 +28,18 @@ class Game:
             pygame.display.flip()
             if self.board.getWon(): #Win state
                 print("You won! =D")
+                vic = pygame.mixer.Sound("Minesweeper/victory.wav") #Plays a sound of 8bit victory =D
+                vic.set_volume(0.01)
+                vic.play()
                 time.sleep(3)
                 run = False #Closes game
             elif self.board.getLose(): #Lose state
+                boom = pygame.mixer.Sound("Minesweeper/explosion.wav") #Plays a sound of 8bit explosion =D
+                boom.set_volume(0.01) #I set it so low cause it jumpscared me when i tested it T_T
+                boom.play()
                 print("You Lost :(")
                 time.sleep(4)
-                run = False #Closes game
+                run = False #Stops loop
         pygame.quit()
 
     def grid(self): #Draw the board
@@ -71,6 +77,12 @@ class Game:
                     string = "bomb"
                 else:
                     string ="bombclicked"
+        if self.board.getWon():
+            if piece.getBomb():
+                if not piece.getOpened():
+                    string = "flag"
+                else:
+                    string = "empty"
         return self.imgs[string] #Returns the image so it can be placed to each block
 
     def Click(self, position, rightClick):
