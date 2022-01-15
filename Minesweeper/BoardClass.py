@@ -20,9 +20,9 @@ class Board: #This is the Board class, mostly for stuff around the board
                 if not Bomb:
                     self.numNotBombs += 1 #Every block that isnt a bomb, numNotBombs + 1
                 piece = Pieces(Bomb) #pushes the bomb to piece
-                row.append(piece)
-            self.board.append(row)
-        self.setNumbers()
+                row.append(piece) #appends the piece for each block
+            self.board.append(row) #appends an entire row to the board
+        self.setNumbers() #then it will set the numbers based on the piece
 
     def setNumbers(self): #setting the numbers
         for row in range(self.size[0]):
