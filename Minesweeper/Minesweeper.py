@@ -5,16 +5,21 @@ from BoardClass import *
 
 print("Welcome to the classic minesweeper game!")
 time.sleep(2)
-print("The objective of the game is to clear a rectangular board that contains hidden bomb without detonating them!")
-time.sleep(2)
-print("As long as you dont hit the bombs, numbers or empty blocks will appear!")
-time.sleep(2)
-print("Use those numbers to help you through this puzzle game!")
-time.sleep(2)
-print("The numbers represents the number of mines or bombs that are on the neighboring blocks!")
-time.sleep(2)
-print("Good Luck and Have Fun!")
-time.sleep(2)
+print("Are you new to minesweeper? (y/n)")
+tutor = input("")
+if tutor.lower() == "yes" or tutor.lower() == "y":
+    print("The objective of the game is to clear a rectangular board that contains hidden bomb without detonating them!")
+    time.sleep(2)
+    print("As long as you dont hit the bombs, numbers or empty blocks will appear!")
+    time.sleep(2)
+    print("Use those numbers to help you through this puzzle game!")
+    time.sleep(2)
+    print("The numbers represents the number of mines or bombs that are on the neighboring blocks!")
+    time.sleep(2)
+    print("Good Luck and Have Fun!")
+    time.sleep(2)
+elif tutor.lower() == "no" or tutor.lower() =="n":
+    pass
 #This is just a tutorial of the game =D
 #To make sure everyone can play the game :)
 
