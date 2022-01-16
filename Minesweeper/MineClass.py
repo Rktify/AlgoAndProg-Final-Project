@@ -70,7 +70,7 @@ class Game:
             if piece.getFlagged():
                 string = "flag" #This is for the flagged status
             else:
-                string = "empty" #If its not opened, and not flagged, then yea its empty =D
+                string = "covered" #If its not opened, and not flagged, then yea its empty =D
         if self.board.getLose():
             if piece.getBomb():#If user lose, it will reveal all the bombs
                 if not piece.getOpened():
@@ -82,7 +82,7 @@ class Game:
                 if not piece.getOpened():
                     string = "flag"
                 else:
-                    string = "empty"
+                    string = "covered"
         return self.imgs[string] #Returns the image so it can be placed to each block
 
     def Click(self, position, rightClick):
