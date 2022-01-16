@@ -28,13 +28,13 @@ class Game:
             pygame.display.flip()
             if self.board.getWon(): #Win state
                 print("You won! =D")
-                vic = pygame.mixer.Sound("Minesweeper/victory.wav") #Plays a sound of 8bit victory =D
+                vic = pygame.mixer.Sound("victory.wav") #Plays a sound of 8bit victory =D
                 vic.set_volume(0.01)
                 vic.play()
                 time.sleep(3)
                 run = False #Closes game
             elif self.board.getLose(): #Lose state
-                boom = pygame.mixer.Sound("Minesweeper/explosion.wav") #Plays a sound of 8bit explosion =D
+                boom = pygame.mixer.Sound("explosion.wav") #Plays a sound of 8bit explosion =D
                 boom.set_volume(0.01) #I set it so low cause it jumpscared me when i tested it T_T
                 boom.play()
                 print("You Lost :(")
@@ -54,8 +54,8 @@ class Game:
 
     def Limg(self): #Load Images
         self.imgs = {}
-        for fileName in os.listdir("Minesweeper/images"):
-            img = pygame.image.load(f"Minesweeper/images/{fileName}")
+        for fileName in os.listdir("images"):
+            img = pygame.image.load(f"images/{fileName}")
             img = pygame.transform.scale(img, self.gridsize) #Scales the image
             self.imgs[fileName.split(".")[0]] = img #removes the png
 
@@ -76,7 +76,7 @@ class Game:
                 if not piece.getOpened():
                     string = "bomb"
                 else:
-                    string ="bombclicked"
+                    string = "bombclicked"
         if self.board.getWon():
             if piece.getBomb(): #If user wins, it will auto flag the blocks that has not been flagged yet.
                 if not piece.getOpened():
